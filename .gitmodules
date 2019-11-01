@@ -1,0 +1,3 @@
+[submodule "IATI-Publishing-Statistics"]
+	path = IATI-Publishing-Statistics
+	url = https://github.com/IATI/IATI-Publishing-Statistics.git
