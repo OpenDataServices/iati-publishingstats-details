@@ -14,5 +14,5 @@ virtualenv .ve
 source .ve/bin/activate
 pip install -r requirements.txt
 ./fetch_helpers.sh
-python forward_looking_details.py > forward_looking_details.csv
+python forward_looking_details.py data1.xml data2.xml > forward_looking_details.csv
 ```

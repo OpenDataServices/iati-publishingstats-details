@@ -5,7 +5,6 @@ from __future__ import print_function
 
 import csv
 import datetime
-import glob
 import re
 import sys
 
@@ -16,7 +15,8 @@ from stats.dashboard import ActivityStats
 writer = csv.writer(sys.stdout)
 writer.writerow(["iati-identifier", "First year to fail", "End dates", "Budget years"])
 
-for fpath in glob.glob("data/*/*"):
+
+for fpath in sys.argv[1:]:
     for activity in etree.parse(fpath).xpath("/iati-activities/iati-activity"):
         activity_stats = ActivityStats()
         activity_stats.element = activity
