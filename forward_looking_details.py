@@ -1,21 +1,19 @@
 """
 WARNING: Currently this code ignores hierarchies.
-
-Budget years are also currently hardcoded.
 """
 from __future__ import print_function
 
+import csv
 import datetime
 import glob
 import re
+import sys
 
 from lxml import etree
 from stats.common import budget_year
 from stats.dashboard import ActivityStats
 
-xsDateRegex = re.compile("(-?[0-9]{4,})-([0-9]{2})-([0-9]{2})")
-
-count = 0
+writer = csv.writer(sys.stdout)
 
 for fpath in glob.glob("data/*/*"):
     for activity in etree.parse(fpath).xpath("/iati-activities/iati-activity"):
@@ -23,9 +21,21 @@ for fpath in glob.glob("data/*/*"):
         activity_stats.element = activity
         current = activity_stats.forwardlooking_activities_current()
         w_budgets = activity_stats.forwardlooking_activities_with_budgets()
-        if current[2019] and not w_budgets[2019]:
-            print(activity.xpath("./iati-identifier/text()")[0])
-        elif current[2020] and not w_budgets[2020]:
-            print(activity.xpath("./iati-identifier/text()")[0])
-        elif current[2021] and not w_budgets[2021]:
-            print(activity.xpath("./iati-identifier/text()")[0])
+        end_dates = activity.xpath(
+            "./activity-date[@type='{}' or @type='{}']".format(
+                activity_stats._planned_end_code(), activity_stats._actual_end_code()
+            )
+        )
+
+        iati_identifier = activity.xpath("./iati-identifier/text()")[0]
+        reason_current = ""
+        reason_budget = ""
+        if not end_dates:
+            reason_current = "No end dates"
+        if not activity.xpath("./budget"):
+            reason_budget = "No budgets"
+
+        for year in sorted(current.keys()):
+            if current[year] and not w_budgets[year]:
+                writer.writerow([iati_identifier, year, reason_current, reason_budget])
+                break
