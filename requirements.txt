@@ -4,6 +4,9 @@
 #
 #    pip-compile
 #
-lxml==4.4.1
+lxml==4.6.5
+    # via -r requirements.in
 python-dateutil==2.8.0
-six==1.12.0               # via python-dateutil
+    # via -r requirements.in
+six==1.12.0
+    # via python-dateutil
